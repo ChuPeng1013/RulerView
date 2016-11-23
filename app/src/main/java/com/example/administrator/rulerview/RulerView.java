@@ -12,14 +12,12 @@ import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Scroller;
 
 /**
  * Created by ChuPeng on 2016/10/25.
  */
 public class RulerView extends View
 {
-
     private Paint paint;
     private Rect rect;
     private float rulerLength;
@@ -62,7 +60,6 @@ public class RulerView extends View
     protected void onDraw(Canvas canvas)
     {
         super.onDraw(canvas);
-
         //初始化画笔
         paint = new Paint();
         paint.setColor(Color.BLACK);
@@ -76,15 +73,12 @@ public class RulerView extends View
         //dm.xdpi是在屏幕的x维度得到确切的物理像素的值，单位是pixal/inch（此屏幕上每英寸包含多少个像素点）
         //将单位是pixal/inch转换成单位是pixal/cm
         xcm = (float) (phoneDisplay.xdpi / 2.54);
-       /* //将pixal/cm转换成单位是pixal/mm
-        xmm = xcm / 10;*/
+        //将pixal/cm转换成单位是pixal/mm
         rulerLength = 6 * xcm;
         rulerWidth = xcm;
         //绘制尺子的外边框
-       // rect = new Rect(0, 0, (int)rulerLength, (int)rulerWidth);
         canvas.drawRect(0, 0, (int)rulerLength + 30, (int)rulerWidth, paint);
         xmm = rulerLength/60;
-
         for(int i = 0; i <= 60; i++)
         {
             if(i%10 == 0)
