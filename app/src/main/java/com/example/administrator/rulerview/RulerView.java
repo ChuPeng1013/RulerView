@@ -31,6 +31,8 @@ public class RulerView extends View
     private int markLine;
     private int lastX;
     private int lastY;
+    private int width;//当前屏幕的宽
+    private int height;//当前屏幕的高
     private Context context;
     public RulerView(Context context)
     {
@@ -57,6 +59,51 @@ public class RulerView extends View
         this.context = context;
     }
 
+    //设置控件的尺寸
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
+    {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        //获取屏幕窗口
+        WindowManager windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+        //获取当前屏幕的宽
+        width = windowManager.getDefaultDisplay().getWidth();
+        //获取当前屏幕的高
+        height = windowManager.getDefaultDisplay().getHeight();
+        setMeasuredDimension(measureWidth(widthMeasureSpec), measureHeight(heightMeasureSpec));
+    }
+
+    //设置控件的宽
+    private int measureWidth(int widthMeasureSpec)
+    {
+        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+        if(widthMode == MeasureSpec.EXACTLY)
+        {
+            width = widthSize;
+        }
+        else if(widthMode == MeasureSpec.AT_MOST)
+        {
+            width = Math.min(width, widthSize);
+        }
+        return width;
+    }
+
+    //设置控件的高
+    private int measureHeight(int heightMeasureSpec)
+    {
+        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+        if(heightMode == MeasureSpec.EXACTLY)
+        {
+            height = heightSize;
+        }
+        else if(heightMode == MeasureSpec.AT_MOST)
+        {
+            height = Math.min(height, heightSize);
+        }
+        return height;
+    }
+
     protected void onDraw(Canvas canvas)
     {
         super.onDraw(canvas);
@@ -73,14 +120,17 @@ public class RulerView extends View
         //dm.xdpi是在屏幕的x维度得到确切的物理像素的值，单位是pixal/inch（此屏幕上每英寸包含多少个像素点）
         //将单位是pixal/inch转换成单位是pixal/cm
         xcm = (float) (phoneDisplay.xdpi / 2.54);
-        //将pixal/cm转换成单位是pixal/mm
+        //刻度尺的长度
         rulerLength = 6 * xcm;
+        //刻度尺的宽度
         rulerWidth = xcm;
         //绘制尺子的外边框
         canvas.drawRect(0, 0, (int)rulerLength + 30, (int)rulerWidth, paint);
+        //最小刻度的长度
         xmm = rulerLength/60;
         for(int i = 0; i <= 60; i++)
         {
+            //绘制数字
             if(i%10 == 0)
             {
                 markLine = longMarkLine;
